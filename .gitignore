@@ -25,3 +25,9 @@ ehthumbs.db
 Icon?
 Thumbs.db
 *.swp
+
+# my project folder
+AI-Broadcast
+
+# .weight file
+*.weights
