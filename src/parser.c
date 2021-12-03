@@ -738,10 +738,11 @@ int is_network(section *s)
     return (strcmp(s->type, "[net]")==0
             || strcmp(s->type, "[network]")==0);
 }
-
+// lode the net with cfg file
 network *parse_network_cfg(char *filename)
 {
     list *sections = read_cfg(filename);
+    // skip to line 892 to see the details
     node *n = sections->front;
     if(!n) error("Config file has no sections");
     network *net = make_network(sections->size - 1);
@@ -896,12 +897,12 @@ list *read_cfg(char *filename)
     int nu = 0;
     list *options = make_list();
     section *current = 0;
-    while((line=fgetl(file)) != 0){
+    while((line=fgetl(file)) != 0){ // iterate the line of .cfg file
         ++ nu;
-        strip(line);
+        strip(line); 
         switch(line[0]){
             case '[':
-                current = malloc(sizeof(section));
+                current = malloc(sizeof(section)); //encounter a "[" str, init a section variable
                 list_insert(options, current);
                 current->options = make_list();
                 current->type = line;

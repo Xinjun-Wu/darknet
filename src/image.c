@@ -813,19 +813,19 @@ image letterbox_image(image im, int w, int h)
 {
     int new_w = im.w;
     int new_h = im.h;
-    if (((float)w/im.w) < ((float)h/im.h)) {
-        new_w = w;
+    if (((float)w/im.w) < ((float)h/im.h)) { //choose the mixmun of the expand times for image, the value can be lower than one 
+        new_w = w; // scale to w
         new_h = (im.h * w)/im.w;
     } else {
-        new_h = h;
+        new_h = h; //scale to h 
         new_w = (im.w * h)/im.h;
     }
-    image resized = resize_image(im, new_w, new_h);
-    image boxed = make_image(w, h, im.c);
-    fill_image(boxed, .5);
+    image resized = resize_image(im, new_w, new_h); // resize the image to (new_w.new_h)
+    image boxed = make_image(w, h, im.c); // generate a box image object match to (w,h)
+    fill_image(boxed, .5); // init the box image with value 0.5
     //int i;
     //for(i = 0; i < boxed.w*boxed.h*boxed.c; ++i) boxed.data[i] = 0;
-    embed_image(resized, boxed, (w-new_w)/2, (h-new_h)/2); 
+    embed_image(resized, boxed, (w-new_w)/2, (h-new_h)/2); // overlay the resized image beyond the box image
     free_image(resized);
     return boxed;
 }

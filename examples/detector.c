@@ -559,14 +559,27 @@ void validate_detector_recall(char *cfgfile, char *weightfile)
 }
 
 
+// ##############################################################
+// the import function that usually called by other codes
 void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh, float hier_thresh, char *outfile, int fullscreen)
 {
-    list *options = read_data_cfg(datacfg);
-    char *name_list = option_find_str(options, "names", "data/names.list");
-    char **names = get_labels(name_list);
+    list *options = read_data_cfg(datacfg); 
+    // read the configuration file of the data, and return a list pointer of data 
+    // skip to line 8 of the file (/src/option_list.c) to see the details of defination.
+    char *name_list = option_find_str(options, "names", "data/names.list"); 
+    //find the str (names) in a list, and return a char pointer
+    // skip to line 108 of the file (/src/option_list.c) to see the details of defination.
+    // NOTICE : the default name list (data/names.list) is missed, that may result in error.
+    char **names = get_labels(name_list); 
+    // read the name labels from name list, return a pointer of pointer
+    //skip to line 657 of the file (/src/data.c) to see the details of defination.
 
-    image **alphabet = load_alphabet();
-    network *net = load_network(cfgfile, weightfile, 0);
+    image **alphabet = load_alphabet(); 
+    //load some image of alphabet from /data/labels/, I also don't know why to do that
+    network *net = load_network(cfgfile, weightfile, 0); 
+    // load the net configuration and weights of the model.
+    // skip to line 53 of the file (/src/network.c) to see the details
+
     set_batch_network(net, 1);
     srand(2222222);
     double time;
@@ -574,7 +587,8 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     char *input = buff;
     float nms=.45;
     while(1){
-        if(filename){
+        if(filename){ 
+            // check the input
             strncpy(input, filename, 256);
         } else {
             printf("Enter Image Path: ");
@@ -583,21 +597,29 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
             if(!input) return;
             strtok(input, "\n");
         }
-        image im = load_image_color(input,0,0);
-        image sized = letterbox_image(im, net->w, net->h);
+        image im = load_image_color(input,0,0); 
+        //load the color image without resize process
+        // go to line 1333 of the file (/src/image.c) to see the details
+        image sized = letterbox_image(im, net->w, net->h); 
+        // using the width and height of net to resize the image
+        // resize the image with equal aspect, and then put it in a std box (the net input size)
+        //go to line 812 of the file (src/image.c) to see the details.
+
         //image sized = resize_image(im, net->w, net->h);
         //image sized2 = resize_max(im, net->w);
         //image sized = crop_image(sized2, -((net->w - sized2.w)/2), -((net->h - sized2.h)/2), net->w, net->h);
         //resize_network(net, sized.w, sized.h);
         layer l = net->layers[net->n-1];
+        // return the last layer of net
 
 
         float *X = sized.data;
         time=what_time_is_it_now();
-        network_predict(net, X);
+        network_predict(net, X); //predicte the imgage with float datatype.
         printf("%s: Predicted in %f seconds.\n", input, what_time_is_it_now()-time);
         int nboxes = 0;
-        detection *dets = get_network_boxes(net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes);
+        detection *dets = get_network_boxes(net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes); //return the detection result with a variable
+        //go to line 562 of the file (/src/network.c) to see the details
         //printf("%d\n", nboxes);
         //if (nms) do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
@@ -833,6 +855,9 @@ void run_detector(int argc, char **argv)
     char *cfg = argv[4];
     char *weights = (argc > 5) ? argv[5] : 0;
     char *filename = (argc > 6) ? argv[6]: 0;
+    // ##############################################################
+    // According "test" argument to call test_detector function
+    // please skip to line 562 of this file (/examples/detector.c)  to see the details
     if(0==strcmp(argv[2], "test")) test_detector(datacfg, cfg, weights, filename, thresh, hier_thresh, outfile, fullscreen);
     else if(0==strcmp(argv[2], "train")) train_detector(datacfg, cfg, weights, gpus, ngpus, clear);
     else if(0==strcmp(argv[2], "valid")) validate_detector(datacfg, cfg, weights, outfile);

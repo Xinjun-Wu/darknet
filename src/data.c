@@ -653,10 +653,10 @@ matrix load_tags_paths(char **paths, int n, int k)
     //printf("%d/%d\n", count, n);
     return y;
 }
-
+// get the lables from a name list
 char **get_labels(char *filename)
 {
-    list *plist = get_paths(filename);
+    list *plist = get_paths(filename); // copy the list to memory 
     char **labels = (char **)list_to_array(plist);
     free_list(plist);
     return labels;

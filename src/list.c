@@ -2,6 +2,9 @@
 #include <string.h>
 #include "list.h"
 
+// define a series of function to implement the feature of list
+
+// announce a list in memory with return a pointer of list
 list *make_list()
 {
 	list *l = malloc(sizeof(list));

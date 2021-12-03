@@ -49,10 +49,11 @@ load_args get_base_args(network *net)
     args.hue = net->hue;
     return args;
 }
-
+// load the net using .cfg and .weights files
 network *load_network(char *cfg, char *weights, int clear)
 {
     network *net = parse_network_cfg(cfg);
+    // skip to line 742 of the file (/src/parser.c) to see the details.
     if(weights && weights[0] != 0){
         load_weights(net, weights);
     }
@@ -511,13 +512,14 @@ int num_detections(network *net, float thresh)
 {
     int i;
     int s = 0;
-    for(i = 0; i < net->n; ++i){
+    for(i = 0; i < net->n; ++i){ // iterate the net layer
         layer l = net->layers[i];
-        if(l.type == YOLO){
-            s += yolo_num_detections(l, thresh);
+        if(l.type == YOLO){ //check the type of layer
+            s += yolo_num_detections(l, thresh); //count the nums of predicted box of yolo layers according to the thresh.
+            // skip to line 275 of the file (/src/yolo_layer.c) to see the details
         }
         if(l.type == DETECTION || l.type == REGION){
-            s += l.w*l.h*l.n;
+            s += l.w*l.h*l.n; // I don't understand now.
         }
     }
     return s;
@@ -525,9 +527,10 @@ int num_detections(network *net, float thresh)
 
 detection *make_network_boxes(network *net, float thresh, int *num)
 {
-    layer l = net->layers[net->n - 1];
+    layer l = net->layers[net->n - 1]; //last layer of network
     int i;
-    int nboxes = num_detections(net, thresh);
+    int nboxes = num_detections(net, thresh); // return the nums of the box according to he thresh that you gived.
+    //go to line 510 of this file to see the details.
     if(num) *num = nboxes;
     detection *dets = calloc(nboxes, sizeof(detection));
     for(i = 0; i < nboxes; ++i){
@@ -543,7 +546,7 @@ void fill_network_boxes(network *net, int w, int h, float thresh, float hier, in
 {
     int j;
     for(j = 0; j < net->n; ++j){
-        layer l = net->layers[j];
+        layer l = net->layers[j]; 
         if(l.type == YOLO){
             int count = get_yolo_detections(l, w, h, net->w, net->h, thresh, map, relative, dets);
             dets += count;
@@ -561,8 +564,10 @@ void fill_network_boxes(network *net, int w, int h, float thresh, float hier, in
 
 detection *get_network_boxes(network *net, int w, int h, float thresh, float hier, int *map, int relative, int *num)
 {
-    detection *dets = make_network_boxes(net, thresh, num);
+    detection *dets = make_network_boxes(net, thresh, num);// init the dets in memory.
+    //skip to line 526 of this fils to see the details
     fill_network_boxes(net, w, h, thresh, hier, map, relative, dets);
+    //skip to line 544 of this file to see the details.
     return dets;
 }
 

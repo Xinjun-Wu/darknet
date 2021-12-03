@@ -305,7 +305,7 @@ void strip(char *s)
     size_t len = strlen(s);
     size_t offset = 0;
     for(i = 0; i < len; ++i){
-        char c = s[i];
+        char c = s[i]; // iterate the character in str
         if(c==' '||c=='\t'||c=='\n') ++offset;
         else s[i-offset] = c;
     }

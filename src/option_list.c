@@ -3,14 +3,18 @@
 #include <string.h>
 #include "option_list.h"
 #include "utils.h"
-
+// ##########################################################
+// function to read configuration file with a pointer variable
 list *read_data_cfg(char *filename)
 {
-    FILE *file = fopen(filename, "r");
-    if(file == 0) file_error(filename);
-    char *line;
-    int nu = 0;
-    list *options = make_list();
+    FILE *file = fopen(filename, "r"); // open a file and return the pointer of the file
+    if(file == 0) file_error(filename); // if the value of the pointer is equal to 0, call a error of read file
+    char *line; // init a char type pointer with named line
+    int nu = 0; // init a int variable with named nu
+    list *options = make_list(); //make a empty list in memory and return a list pointer with named option, 
+    // skip to line 8 of file (/src/list.c) to see the details
+
+    // read the cfg file and load the data into memory, with return a list pointer to indicate the location
     while((line=fgetl(file)) != 0){
         ++ nu;
         strip(line);
@@ -87,7 +91,7 @@ void option_unused(list *l)
         n = n->next;
     }
 }
-
+// find the value correspoding to the key in the list
 char *option_find(list *l, char *key)
 {
     node *n = l->front;
@@ -103,8 +107,10 @@ char *option_find(list *l, char *key)
 }
 char *option_find_str(list *l, char *key, char *def)
 {
-    char *v = option_find(l, key);
-    if(v) return v;
+    char *v = option_find(l, key); // return the value of the key
+    if(v) return v; // if v is not 0, return the value of v
+    // if v is equal to 0 , that's mean the function can't find the value of key in the list
+    // and if def is offered, using default names chars
     if(def) fprintf(stderr, "%s: Using default '%s'\n", key, def);
     return def;
 }

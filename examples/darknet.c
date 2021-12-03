@@ -397,6 +397,9 @@ void visualize(char *cfgfile, char *weightfile)
     visualize_network(net);
 }
 
+// ##############################################################
+// the entrence of the whole framework, 
+// go to line 432 of this file to see the details of detector
 int main(int argc, char **argv)
 {
     //test_resize("data/bad.jpg");
@@ -429,12 +432,18 @@ int main(int argc, char **argv)
         run_lsd(argc, argv);
     } else if (0 == strcmp(argv[1], "detector")){
         run_detector(argc, argv);
+        // ##############################################################
+        // according the argument to call the run_detector function.
+        // go to example/detector.c line 789 to see the definition of run_detector
     } else if (0 == strcmp(argv[1], "detect")){
         float thresh = find_float_arg(argc, argv, "-thresh", .5);
         char *filename = (argc > 4) ? argv[4]: 0;
         char *outfile = find_char_arg(argc, argv, "-out", 0);
         int fullscreen = find_arg(argc, argv, "-fullscreen");
         test_detector("cfg/coco.data", argv[2], argv[3], filename, thresh, .5, outfile, fullscreen);
+        // ##############################################################
+        // according the argument to call the test_detector function.
+        // go to example/detector.c line 562 to see the definition of run_detector
     } else if (0 == strcmp(argv[1], "cifar")){
         run_cifar(argc, argv);
     } else if (0 == strcmp(argv[1], "go")){

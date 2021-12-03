@@ -29,8 +29,11 @@ Thumbs.db
 # vscode
 .vscode
 
+# cache
+__pycache__
+
 # my project folder
-AI-Broadcast
+# AI-Broadcast
 
 # .weight file
 *.weights

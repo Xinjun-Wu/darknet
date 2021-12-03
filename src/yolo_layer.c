@@ -276,10 +276,10 @@ int yolo_num_detections(layer l, float thresh)
 {
     int i, n;
     int count = 0;
-    for (i = 0; i < l.w*l.h; ++i){
-        for(n = 0; n < l.n; ++n){
+    for (i = 0; i < l.w*l.h; ++i){ // iterate the output data of yolo, each point indicate an anchor box.
+        for(n = 0; n < l.n; ++n){ // iterate the bounding box  of each anchor box.
             int obj_index  = entry_index(l, 0, n*l.w*l.h + i, 4);
-            if(l.output[obj_index] > thresh){
+            if(l.output[obj_index] > thresh){ //check the value of prob
                 ++count;
             }
         }
